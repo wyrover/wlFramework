@@ -142,7 +142,7 @@ class RefCountedThreadSafe : public subtle::RefCountedThreadSafeBase {
 //
 template<typename T>
 class RefCountedData
-    : public base::RefCountedThreadSafe< base::RefCountedData<T> > {
+    : public wl::RefCountedThreadSafe< wl::RefCountedData<T> > {
  public:
   RefCountedData() : data() {}
   RefCountedData(const T& in_value) : data(in_value) {}
@@ -150,7 +150,7 @@ class RefCountedData
   T data;
 
  private:
-  friend class base::RefCountedThreadSafe<base::RefCountedData<T> >;
+  friend class wl::RefCountedThreadSafe<wl::RefCountedData<T> >;
   ~RefCountedData() {}
 };
 

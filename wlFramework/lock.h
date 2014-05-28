@@ -15,7 +15,7 @@ public:
     ::LeaveCriticalSection(&cs_);
   }
   bool Try() {
-    if (::TryEnterCriticalSection(*cs_) != FALSE) {
+    if (::TryEnterCriticalSection(&cs_) != FALSE) {
       return true;
     }
     return false;
@@ -36,7 +36,7 @@ public:
 private:
   Lock& lock_;
   DISALLOW_COPY_AND_ASSIGN(AutoLock);
-}
+};
 }
 
 #endif

@@ -11,14 +11,15 @@ namespace wl {
 
 struct WL_EXPORT PendingTask {
   PendingTask(const Location& from, const Closure& task);
-  PendingTask(const Location& from, const Closure& task, unsigned long delay_ticks);
+  PendingTask(const Location& from, const Closure& task, TimeTicks delayed_run_time);
   ~PendingTask();
 
   bool operator<(const PendingTask& other) const;
   Location posted_from;
   Closure task;
-  unsigned long time_posted;
-  unsigned long delay_ticks;
+  int sequence_num;
+  // the time when the task should be run.
+  TimeTicks delayed_run_time;
 };
 
 class WL_EXPORT TaskQueue : public std::queue<PendingTask> {

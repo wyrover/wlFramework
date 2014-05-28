@@ -26,8 +26,7 @@ bool RefCountedBase::Release() const {
 }
 
 bool RefCountedThreadSafeBase::HasOneRef() const {
-  return AtomicRefCountIsOne(
-      &const_cast<RefCountedThreadSafeBase*>(this)->ref_count_);
+  return ref_count_ == 1;
 }
 
 RefCountedThreadSafeBase::RefCountedThreadSafeBase() : ref_count_(0) {

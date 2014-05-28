@@ -79,6 +79,8 @@ class Callback<R(void)> {
 public:
   Callback() {}
 
+  bool Equals(const Callback& other) const {}
+
   R Run() const {}
 };
 

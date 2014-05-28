@@ -9,6 +9,8 @@
     <ClInclude Include="message_loop.h" />
     <ClInclude Include="ref_counted.h" />
     <ClInclude Include="lock.h" />
+    <ClInclude Include="scoped_ptr.h" />
+    <ClInclude Include="thread_local.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="callback.cc" />

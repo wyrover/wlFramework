@@ -17,4 +17,20 @@
   TypeName(const TypeName&);               \
   void operator=(const TypeName&)
 
+#define MOVE_ONLY_TYPE_FOR_CPP_03(type, rvalue_type) \
+ private: \
+struct rvalue_type { \
+  explicit rvalue_type(type* object) : object(object) {} \
+  type* object; \
+}; \
+  type(type&); \
+  void operator=(type&); \
+ public: \
+ operator rvalue_type() { return rvalue_type(this); } \
+ type Pass() { return type(rvalue_type(this)); } \
+ private:
+
+typedef long long TimeDelta;
+typedef long long TimeTicks;
+
 // TODO: reference additional headers your program requires here

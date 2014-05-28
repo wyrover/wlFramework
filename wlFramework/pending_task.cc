@@ -6,22 +6,22 @@ namespace wl {
 PendingTask::PendingTask(const Location& from, const Closure& task)
   : posted_from(from)
   , task(task)
-  , delay_ticks(0)
-  , time_posted(::GetTickCount()) {}
+  , sequence_num(0)
+  , delayed_run_time(0) {}
 
 PendingTask::PendingTask(const Location& from, const Closure& task,
-  unsigned long delay_ticks)
+  TimeTicks delayed_run_time)
   : posted_from(from)
   , task(task)
-  , delay_ticks(delay_ticks)
-  , time_posted(::GetTickCount()) {}
+  , sequence_num(0)
+  , delayed_run_time(delayed_run_time) {}
 
 PendingTask::~PendingTask() {}
 
 bool PendingTask::operator<(const PendingTask& other) const {
-  if (delay_ticks != other.delay_ticks)
-    return delay_ticks < other.delay_ticks;
-  return time_posted < other.time_posted;
+  if (delayed_run_time != other.delayed_run_time)
+    return delayed_run_time < other.delayed_run_time;
+  return sequence_num - other.sequence_num > 0;
 }
 
 void TaskQueue::Swap(TaskQueue* queue) {
