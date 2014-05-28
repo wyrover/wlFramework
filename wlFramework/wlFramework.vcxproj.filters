@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="callback.h" />
+    <ClInclude Include="location.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="pending_task.h" />
+    <ClInclude Include="message_loop.h" />
+    <ClInclude Include="ref_counted.h" />
+    <ClInclude Include="lock.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="callback.cc" />
+    <ClCompile Include="location.cc" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="wlFramework.cpp" />
+    <ClCompile Include="pending_task.cc" />
+    <ClCompile Include="message_loop.cc" />
+    <ClCompile Include="ref_counted.cc" />
+    <ClCompile Include="lock.cc" />
+  </ItemGroup>
+</Project>
