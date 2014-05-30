@@ -20,6 +20,13 @@ wl::ThreadLocalPointer<wl::MessageLoop> tls_ptr;
 
 namespace wl {
 
+Lock::Lock() {
+  ::InitializeCriticalSectionAndSpinCount(&cs_, 2000);
+}
+Lock::~Lock() {
+  ::DeleteCriticalSection(&cs_);
+}
+
 Location::Location(const char* function_name, const char* file_name,
   int line_number, const void* program_counter)
   : function_name_(function_name)

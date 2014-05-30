@@ -75,7 +75,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="callback.h" />
-    <ClInclude Include="lock.h" />
     <ClInclude Include="message_loop.h" />
     <ClInclude Include="ref_counted.h" />
     <ClInclude Include="scoped_ptr.h" />
@@ -94,7 +93,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="lock.cc" />
     <ClCompile Include="message_loop.cc" />
     <ClCompile Include="ref_counted.cc" />
     <ClCompile Include="stdafx.cpp">

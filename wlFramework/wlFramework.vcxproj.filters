@@ -6,7 +6,6 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="message_loop.h" />
     <ClInclude Include="ref_counted.h" />
-    <ClInclude Include="lock.h" />
     <ClInclude Include="scoped_ptr.h" />
     <ClInclude Include="thread_local.h" />
     <ClInclude Include="weak_ptr.h" />
@@ -18,7 +17,6 @@
     <ClCompile Include="wlFramework.cpp" />
     <ClCompile Include="message_loop.cc" />
     <ClCompile Include="ref_counted.cc" />
-    <ClCompile Include="lock.cc" />
     <ClCompile Include="weak_ptr.cc" />
   </ItemGroup>
 </Project>
