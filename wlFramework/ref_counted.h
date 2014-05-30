@@ -1,6 +1,7 @@
 #ifndef WL_REF_COUNTED_H_
 #define WL_REF_COUNTED_H_
 
+#include <assert.h>
 #include "stdafx.h"
 
 namespace wl {

@@ -75,15 +75,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="callback.h" />
-    <ClInclude Include="location.h" />
     <ClInclude Include="lock.h" />
     <ClInclude Include="message_loop.h" />
-    <ClInclude Include="pending_task.h" />
     <ClInclude Include="ref_counted.h" />
     <ClInclude Include="scoped_ptr.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="thread_local.h" />
+    <ClInclude Include="weak_ptr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="callback.cc" />
@@ -95,15 +94,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="location.cc" />
     <ClCompile Include="lock.cc" />
     <ClCompile Include="message_loop.cc" />
-    <ClCompile Include="pending_task.cc" />
     <ClCompile Include="ref_counted.cc" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="weak_ptr.cc" />
     <ClCompile Include="wlFramework.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

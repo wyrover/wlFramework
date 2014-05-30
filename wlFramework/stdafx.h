@@ -17,6 +17,10 @@
   TypeName(const TypeName&);               \
   void operator=(const TypeName&)
 
+#define DISALLOW_IMPLICIT_CONSTRUCTORS(TypeName) \
+  TypeName();                                    \
+  DISALLOW_COPY_AND_ASSIGN(TypeName)
+
 #define MOVE_ONLY_TYPE_FOR_CPP_03(type, rvalue_type) \
  private: \
 struct rvalue_type { \
