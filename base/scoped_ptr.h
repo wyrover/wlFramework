@@ -84,8 +84,8 @@
 // Note that PassAs<>() is implemented only for scoped_ptr<T>, but not for
 // scoped_ptr<T[]>. This is because casting array pointers may not be safe.
 
-#ifndef WL_SCOPED_PTR_H_
-#define WL_SCOPED_PTR_H_
+#ifndef BASE_SCOPED_PTR_H_
+#define BASE_SCOPED_PTR_H_
 
 // This is an implementation designed to match the anticipated future TR2
 // implementation of the scoped_ptr class and scoped_ptr_malloc (deprecated).
@@ -93,10 +93,10 @@
 #include <assert.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <algorithm>
-#include "stdafx.h"
 
-namespace wl {
+#include <algorithm>
+
+namespace base {
 
 // Function object which deletes its parameter, which must be a pointer.
 // If C is an array type, invokes 'delete[]' on the parameter; otherwise,
@@ -270,7 +270,7 @@ class scoped_ptr_impl {
 // unique_ptr<> features. Known deficiencies include not supporting move-only
 // deleteres, function pointers as deleters, and deleters with reference
 // types.
-template <class T, class D = wl::DefaultDeleter<T> >
+template <class T, class D = base::DefaultDeleter<T> >
 class scoped_ptr {
   MOVE_ONLY_TYPE_FOR_CPP_03(scoped_ptr, RValue)
 
@@ -317,6 +317,7 @@ class scoped_ptr {
   // scoped_ptr.
   template <typename U, typename V>
   scoped_ptr& operator=(scoped_ptr<U, V> rhs) {
+    COMPILE_ASSERT(!base::is_array<U>::value, U_cannot_be_an_array);
     impl_.TakeState(&rhs.impl_);
     return *this;
   }
@@ -349,7 +350,7 @@ class scoped_ptr {
   // scoped_ptr2" will compile but do the wrong thing (i.e., convert
   // to Testable and then do the comparison).
  private:
-  typedef wl::internal::scoped_ptr_impl<element_type, deleter_type>
+  typedef base::internal::scoped_ptr_impl<element_type, deleter_type>
       scoped_ptr::*Testable;
 
  public:
@@ -389,7 +390,7 @@ class scoped_ptr {
  private:
   // Needed to reach into |impl_| in the constructor.
   template <typename U, typename V> friend class scoped_ptr;
-  wl::internal::scoped_ptr_impl<element_type, deleter_type> impl_;
+  base::internal::scoped_ptr_impl<element_type, deleter_type> impl_;
 
   // Forbidden for API compatibility with std::unique_ptr.
   explicit scoped_ptr(int disallow_construction_from_null);
@@ -459,7 +460,7 @@ class scoped_ptr<T[], D> {
   // Allow scoped_ptr<element_type> to be used in boolean expressions, but not
   // implicitly convertible to a real bool (which is dangerous).
  private:
-  typedef wl::internal::scoped_ptr_impl<element_type, deleter_type>
+  typedef base::internal::scoped_ptr_impl<element_type, deleter_type>
       scoped_ptr::*Testable;
 
  public:
@@ -490,7 +491,7 @@ class scoped_ptr<T[], D> {
   enum { type_must_be_complete = sizeof(element_type) };
 
   // Actually hold the data.
-  wl::internal::scoped_ptr_impl<element_type, deleter_type> impl_;
+  base::internal::scoped_ptr_impl<element_type, deleter_type> impl_;
 
   // Disable initialization from any type other than element_type*, by
   // providing a constructor that matches such an initialization, but is

@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B9FF4CCB-65AD-47A4-ADEF-F7E28A9ADFD9}</ProjectGuid>
+    <ProjectGuid>{DF0887A9-71AD-48B9-8C28-63CDBC202A1A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>wlFramework</RootNamespace>
   </PropertyGroup>
@@ -49,6 +49,9 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;WLFRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>precompile.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -64,6 +67,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WLFRAMEWORK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>precompile.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(SolutionDir)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -74,33 +80,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="callback.h" />
-    <ClInclude Include="message_loop.h" />
-    <ClInclude Include="ref_counted.h" />
-    <ClInclude Include="scoped_ptr.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="thread_local.h" />
-    <ClInclude Include="weak_ptr.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="callback.cc" />
+    <ClCompile Include="base\closure.cc" />
+    <ClCompile Include="base\workthread.cc" />
+    <ClCompile Include="base\lock.cc" />
+    <ClCompile Include="base\ref_counted.cc" />
+    <ClCompile Include="base\weak_ptr.cc" />
     <ClCompile Include="dllmain.cpp">
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-      </PrecompiledHeader>
-      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-      </PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="message_loop.cc" />
-    <ClCompile Include="ref_counted.cc" />
-    <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="weak_ptr.cc" />
-    <ClCompile Include="wlFramework.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="base\closure.h" />
+    <ClInclude Include="base\workthread.h" />
+    <ClInclude Include="base\lock.h" />
+    <ClInclude Include="base\ref_counted.h" />
+    <ClInclude Include="base\scoped_ptr.h" />
+    <ClInclude Include="base\weak_ptr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

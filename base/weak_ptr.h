@@ -60,13 +60,12 @@
 // Invalidating the factory's WeakPtrs un-binds it from the thread, allowing it
 // to be passed for a different thread to use or delete it.
 
-#ifndef WL_WEAK_PTR_H_
-#define WL_WEAK_PTR_H_
+#ifndef BASE_WEAK_PTR_H_
+#define BASE_WEAK_PTR_H_
 
-#include "stdafx.h"
-#include "ref_counted.h"
+#include "base/ref_counted.h"
 
-namespace wl {
+namespace base {
 
 template <typename T> class SupportsWeakPtr;
 template <typename T> class WeakPtr;
@@ -75,7 +74,7 @@ namespace internal {
 // These classes are part of the WeakPtr implementation.
 // DO NOT USE THESE CLASSES DIRECTLY YOURSELF.
 
-class WL_EXPORT WeakReference {
+class BASE_EXPORT WeakReference {
  public:
   // Although Flag is bound to a specific thread, it may be deleted from another
   // via base::WeakPtr::~WeakPtr().
@@ -87,7 +86,7 @@ class WL_EXPORT WeakReference {
     bool IsValid() const;
 
    private:
-    friend class wl::RefCountedThreadSafe<Flag>;
+    friend class base::RefCountedThreadSafe<Flag>;
 
     ~Flag();
 
@@ -104,7 +103,7 @@ class WL_EXPORT WeakReference {
   scoped_refptr<const Flag> flag_;
 };
 
-class WL_EXPORT WeakReferenceOwner {
+class BASE_EXPORT WeakReferenceOwner {
  public:
   WeakReferenceOwner();
   ~WeakReferenceOwner();
@@ -125,7 +124,7 @@ class WL_EXPORT WeakReferenceOwner {
 // constructor by avoiding the need for a public accessor for ref_.  A
 // WeakPtr<T> cannot access the private members of WeakPtr<U>, so this
 // base class gives us a way to access ref_ in a protected fashion.
-class WL_EXPORT WeakPtrBase {
+class BASE_EXPORT WeakPtrBase {
  public:
   WeakPtrBase();
   ~WeakPtrBase();
@@ -319,6 +318,6 @@ WeakPtr<Derived> AsWeakPtr(Derived* t) {
   return internal::SupportsWeakPtrBase::StaticAsWeakPtr<Derived>(t);
 }
 
-}
+}  // namespace base
 
-#endif
+#endif  // BASE_MEMORY_WEAK_PTR_H_

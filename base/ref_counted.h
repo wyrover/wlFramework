@@ -1,14 +1,17 @@
-#ifndef WL_REF_COUNTED_H_
-#define WL_REF_COUNTED_H_
+// Copyright (c) 2012 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
-#include <assert.h>
-#include "stdafx.h"
+#ifndef BASE_REF_COUNTED_H_
+#define BASE_REF_COUNTED_H_
 
-namespace wl {
+#include <cassert>
+
+namespace base {
 
 namespace subtle {
 
-class WL_EXPORT RefCountedBase {
+class BASE_EXPORT RefCountedBase {
  public:
   bool HasOneRef() const { return ref_count_ == 1; }
 
@@ -27,7 +30,7 @@ class WL_EXPORT RefCountedBase {
   DISALLOW_COPY_AND_ASSIGN(RefCountedBase);
 };
 
-class WL_EXPORT RefCountedThreadSafeBase {
+class BASE_EXPORT RefCountedThreadSafeBase {
  public:
   bool HasOneRef() const;
 
@@ -143,7 +146,7 @@ class RefCountedThreadSafe : public subtle::RefCountedThreadSafeBase {
 //
 template<typename T>
 class RefCountedData
-    : public wl::RefCountedThreadSafe< wl::RefCountedData<T> > {
+    : public base::RefCountedThreadSafe< base::RefCountedData<T> > {
  public:
   RefCountedData() : data() {}
   RefCountedData(const T& in_value) : data(in_value) {}
@@ -151,7 +154,7 @@ class RefCountedData
   T data;
 
  private:
-  friend class wl::RefCountedThreadSafe<wl::RefCountedData<T> >;
+  friend class base::RefCountedThreadSafe<base::RefCountedData<T> >;
   ~RefCountedData() {}
 };
 
@@ -282,4 +285,4 @@ scoped_refptr<T> make_scoped_refptr(T* t) {
   return scoped_refptr<T>(t);
 }
 
-#endif
+#endif  // BASE_MEMORY_REF_COUNTED_H_

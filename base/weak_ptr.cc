@@ -1,10 +1,10 @@
 // Copyright (c) 2011 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-#include "stdafx.h"
-#include "weak_ptr.h"
 
-namespace wl {
+#include "base/weak_ptr.h"
+
+namespace base {
 namespace internal {
 
 WeakReference::Flag::Flag() : is_valid_(true) {
@@ -63,5 +63,5 @@ WeakPtrBase::~WeakPtrBase() {
 WeakPtrBase::WeakPtrBase(const WeakReference& ref) : ref_(ref) {
 }
 
-}
-}
+}  // namespace internal
+}  // namespace base

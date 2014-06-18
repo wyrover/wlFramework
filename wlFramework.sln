@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wlFramework", "wlFramework\wlFramework.vcxproj", "{B9FF4CCB-65AD-47A4-ADEF-F7E28A9ADFD9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wlFramework", "wlFramework.vcxproj", "{DF0887A9-71AD-48B9-8C28-63CDBC202A1A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B9FF4CCB-65AD-47A4-ADEF-F7E28A9ADFD9}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B9FF4CCB-65AD-47A4-ADEF-F7E28A9ADFD9}.Debug|Win32.Build.0 = Debug|Win32
-		{B9FF4CCB-65AD-47A4-ADEF-F7E28A9ADFD9}.Release|Win32.ActiveCfg = Release|Win32
-		{B9FF4CCB-65AD-47A4-ADEF-F7E28A9ADFD9}.Release|Win32.Build.0 = Release|Win32
+		{DF0887A9-71AD-48B9-8C28-63CDBC202A1A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DF0887A9-71AD-48B9-8C28-63CDBC202A1A}.Debug|Win32.Build.0 = Debug|Win32
+		{DF0887A9-71AD-48B9-8C28-63CDBC202A1A}.Release|Win32.ActiveCfg = Release|Win32
+		{DF0887A9-71AD-48B9-8C28-63CDBC202A1A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

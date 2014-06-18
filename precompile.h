@@ -5,21 +5,17 @@
 
 #pragma once
 
-#include "targetver.h"
+#include <SDKDDKVer.h>
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files:
 #include <windows.h>
 
-#define WL_EXPORT __declspec(dllexport)
+#define BASE_EXPORT __declspec(dllexport)
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
   TypeName(const TypeName&);               \
   void operator=(const TypeName&)
-
-#define DISALLOW_IMPLICIT_CONSTRUCTORS(TypeName) \
-  TypeName();                                    \
-  DISALLOW_COPY_AND_ASSIGN(TypeName)
 
 #define MOVE_ONLY_TYPE_FOR_CPP_03(type, rvalue_type) \
  private: \
@@ -34,7 +30,8 @@ struct rvalue_type { \
  type Pass() { return type(rvalue_type(this)); } \
  private:
 
-typedef long long TimeDelta;
-typedef long long TimeTicks;
+#define DISALLOW_IMPLICIT_CONSTRUCTORS(TypeName) \
+  TypeName();                                    \
+  DISALLOW_COPY_AND_ASSIGN(TypeName)
 
 // TODO: reference additional headers your program requires here
