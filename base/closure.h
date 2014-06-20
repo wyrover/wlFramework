@@ -23,11 +23,17 @@ protected:
   InvokeFuncStorage polymorphic_invoke_;
 };
 
-template <typename Runnable, typename RunType>
-struct BindState<Runnable, RunType, void()> : public BindStateBase {
+template <typename Sig>
+class Callback;
+
+template <typename Runnable, typename BoundArgsType>
+struct BindState;
+
+template <typename Runnable>
+struct BindState<Runnable, void()> : public BindStateBase {
   typedef Runnable RunnableType;
   typedef IsWeakMethod<false, void> IsWeakCall;
-  typedef Invoker<0, IsWeakCall::value, BindState, RunType> InvokerType;
+  typedef Invoker<0, IsWeakCall::value, BindState, typename Runnable::RunType> InvokerType;
   typedef typename InvokerType::UnboundRunType UnboundRunType;
   explicit BindState(const Runnable& runnable)
     : runnable_(runnable) {}
@@ -35,11 +41,11 @@ struct BindState<Runnable, RunType, void()> : public BindStateBase {
   RunnableType runnable_;
 };
 
-template <typename Runnable, typename RunType, typename P1>
-struct BindState<Runnable, RunType, void(P1)> : public BindStateBase {
+template <typename Runnable, typename P1>
+struct BindState<Runnable, void(P1)> : public BindStateBase {
   typedef Runnable RunnableType;
   typedef IsWeakMethod<Runnable::IsMethod::value, P1> IsWeakCall;
-  typedef Invoker<1, IsWeakCall::value, BindState, RunType> InvokerType;
+  typedef Invoker<1, IsWeakCall::value, BindState, typename Runnable::RunType> InvokerType;
   typedef typename InvokerType::UnboundRunType UnboundRunType;
   typedef UnwrapTraits<P1> Bound1UnwrapTraits;
 
@@ -62,11 +68,11 @@ public:
 
   Callback() : CallbackBase(NULL) {}
 
-  template <typename Runnable, typename BindRunType, typename BoundArgsType>
-  Callback(BindState<Runnable, BindRunType, BoundArgsType>* bind_state)
+  template <typename Runnable, typename BoundArgsType>
+  Callback(BindState<Runnable, BoundArgsType>* bind_state)
     : CallbackBase(bind_state) {
     PolymorphicInvoke invoke_func =
-      &BindState<Runnable, BindRunType, BoundArgsType>::InvokerType::Run;
+      &BindState<Runnable, BoundArgsType>::InvokerType::Run;
     polymorphic_invoke_ = reinterpret_cast<InvokeFuncStorage>(invoke_func);
   }
 
@@ -88,10 +94,9 @@ typedef Callback<void(void)> Closure;
 template <typename Functor>
 Callback<typename BindState<
   typename RunnableAdapter<Functor>,
-  typename RunnableAdapter<Functor>::RunType,
   void()>::UnboundRunType>
 Bind(Functor functor) {
-  typedef BindState<RunnableAdapter<Functor>, RunnableAdapter<Functor>::RunType, void()> BindState;
+  typedef BindState<RunnableAdapter<Functor>, void()> BindState;
   return Callback<BindState::UnboundRunType>(
     new BindState(RunnableAdapter<Functor>(functor)));
 }
@@ -99,10 +104,9 @@ Bind(Functor functor) {
 template <typename Functor, typename P1>
 Callback<typename BindState<
   typename RunnableAdapter<Functor>,
-  typename RunnableAdapter<Functor>::RunType,
   void(typename CallbackParamTraits<P1>::StorageType)>::UnboundRunType>
 Bind(Functor functor, const P1& p1) {
-  typedef BindState<RunnableAdapter<Functor>, RunnableAdapter<Functor>::RunType,
+  typedef BindState<RunnableAdapter<Functor>,
     void(typename CallbackParamTraits<P1>::StorageType)> BindState;
   return Callback<typename BindState::UnboundRunType>(
     new BindState(RunnableAdapter<Functor>(functor), p1));

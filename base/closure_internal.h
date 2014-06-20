@@ -85,12 +85,6 @@ struct UnwrapTraits<WeakPtr<T> > {
   static ForwardType Unwrap(const WeakPtr<T>& o) { return o; }
 };
 
-template <typename Sig>
-class Callback;
-
-template <typename Runnable, typename RunType, typename BoundArgsType>
-struct BindState;
-
 template<int NumBound, bool IsWeakCall, typename Storage, typename RunType>
 struct Invoker;
 
