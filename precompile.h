@@ -11,7 +11,7 @@
 // Windows Header Files:
 #include <windows.h>
 
-#define BASE_EXPORT __declspec(dllexport)
+#define BASE_EXPORT /*__declspec(dllexport)*/
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
   TypeName(const TypeName&);               \

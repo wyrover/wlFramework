@@ -1,7 +1,7 @@
 #ifndef BASE_CLOSURE_H_
 #define BASE_CLOSURE_H_
 
-#include "base/ref_counted.h"
+#include "base/closure_internal.h"
 
 namespace base {
 class BindStateBase : public RefCountedThreadSafe<BindStateBase> {
@@ -23,75 +23,42 @@ protected:
   InvokeFuncStorage polymorphic_invoke_;
 };
 
-template <typename Sig>
-class Callback;
-
-template <typename Runnable, typename RunType, typename BoundArgsType>
-struct BindState;
-
-template<int NumBound, typename Storage, typename RunType>
-struct Invoker;
-
-template<bool IsWeakCall, typename ReturnType, typename Runnable,
-  typename ArgsType>
-struct InvokeHelper;
-
-template <typename Functor>
-class RunnableAdapter;
-
-template <typename R>
-class RunnableAdapter<R(*)()> {
-public:
-  typedef R (RunType)();
-
-  explicit RunnableAdapter(R(*function)())
-    : function_(function) {}
-  R Run() {
-    return function_();
-  }
-private:
-  R (*function_)();
-};
-
-template <typename ReturnType, typename Runnable>
-struct InvokeHelper<false, ReturnType, Runnable, void()> {
-  static ReturnType MakeItSo(Runnable runnable) {
-    return runnable.Run();
-  }
-};
-
-template <typename Runnable>
-struct InvokeHelper<false, void, Runnable, void()> {
-  static void MakeItSo(Runnable runnable) {
-    runnable.Run();
-  }
-};
-
-template <typename StorageType, typename R>
-struct Invoker<0, StorageType, R()> {
-  typedef R(UnboundRunType)();
-  static R Run(BindStateBase* base) {
-    StorageType* storage = static_cast<StorageType*>(base);
-    return InvokeHelper<StorageType::IsWeakCall, R,
-      typename StorageType::RunnableType, void()>::MakeItSo(storage->runnable_);
-  }
-};
-
 template <typename Runnable, typename RunType>
 struct BindState<Runnable, RunType, void()> : public BindStateBase {
   typedef Runnable RunnableType;
-  static const bool IsWeakCall = false;
-  typedef Invoker<0, BindState, RunType> InvokerType;
+  typedef IsWeakMethod<false, void> IsWeakCall;
+  typedef Invoker<0, IsWeakCall::value, BindState, RunType> InvokerType;
+  typedef typename InvokerType::UnboundRunType UnboundRunType;
   explicit BindState(const Runnable& runnable)
     : runnable_(runnable) {}
   virtual ~BindState() {}
   RunnableType runnable_;
 };
 
-template <typename R>
-class Callback<R(void)> : public CallbackBase {
+template <typename Runnable, typename RunType, typename P1>
+struct BindState<Runnable, RunType, void(P1)> : public BindStateBase {
+  typedef Runnable RunnableType;
+  typedef IsWeakMethod<Runnable::IsMethod::value, P1> IsWeakCall;
+  typedef Invoker<1, IsWeakCall::value, BindState, RunType> InvokerType;
+  typedef typename InvokerType::UnboundRunType UnboundRunType;
+  typedef UnwrapTraits<P1> Bound1UnwrapTraits;
+
+  BindState(const Runnable& runnable, const P1& p1)
+    : runnable_(runnable)
+    , p1_(p1) {
+    MaybeRefcount<Runnable::IsMethod::value, P1>::AddRef(p1_);
+  }
+  virtual ~BindState() {
+    MaybeRefcount<Runnable::IsMethod::value, P1>::Release(p1_);
+  }
+  RunnableType runnable_;
+  P1 p1_;
+};
+
+template <>
+class Callback<void(void)> : public CallbackBase {
 public:
-  typedef R(RunType)();
+  typedef void(RunType)();
 
   Callback() : CallbackBase(NULL) {}
 
@@ -107,27 +74,38 @@ public:
     return CallbackBase::Equals(other);
   }
 
-  R Run() const {
+  void Run() const {
     PolymorphicInvoke f =
       reinterpret_cast<PolymorphicInvoke>(polymorphic_invoke_);
-    return f(bind_state_.get());
+    f(bind_state_.get());
   }
 private:
-  typedef R(*PolymorphicInvoke)(BindStateBase* bind_state);
+  typedef void(*PolymorphicInvoke)(BindStateBase* bind_state);
 };
 
 typedef Callback<void(void)> Closure;
 
 template <typename Functor>
-Callback<
-  typename BindState<
-    typename RunnableAdapter<Functor>,
-    typename RunnableAdapter<Functor>::RunType,
-    void()>::InvokerType::UnboundRunType>
+Callback<typename BindState<
+  typename RunnableAdapter<Functor>,
+  typename RunnableAdapter<Functor>::RunType,
+  void()>::UnboundRunType>
 Bind(Functor functor) {
   typedef BindState<RunnableAdapter<Functor>, RunnableAdapter<Functor>::RunType, void()> BindState;
-  return Callback<BindState::InvokerType::UnboundRunType>(
+  return Callback<BindState::UnboundRunType>(
     new BindState(RunnableAdapter<Functor>(functor)));
+}
+
+template <typename Functor, typename P1>
+Callback<typename BindState<
+  typename RunnableAdapter<Functor>,
+  typename RunnableAdapter<Functor>::RunType,
+  void(typename CallbackParamTraits<P1>::StorageType)>::UnboundRunType>
+Bind(Functor functor, const P1& p1) {
+  typedef BindState<RunnableAdapter<Functor>, RunnableAdapter<Functor>::RunType,
+    void(typename CallbackParamTraits<P1>::StorageType)> BindState;
+  return Callback<typename BindState::UnboundRunType>(
+    new BindState(RunnableAdapter<Functor>(functor), p1));
 }
 }
 
