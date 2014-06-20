@@ -6,6 +6,10 @@ public:
   WorkThread();
   ~WorkThread();
   void InitMessageWnd();
+  void ScheduleWork();
+  void ScheduleDelayedWork();
+  void RunLoop();
+  bool DoWork();
 private:
   static LRESULT CALLBACK WndProcThunk(HWND window_handle,
     UINT message, WPARAM wparam, LPARAM lparam);

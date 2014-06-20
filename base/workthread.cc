@@ -5,6 +5,8 @@
 namespace {
   static const wchar_t kWndClassFormat[] = L"WorkThreadWindow_%p";
 
+  static const int kMsgHaveWork = WM_USER + 1;
+
   HMODULE GetModuleFromAddress(void* address) {
     HMODULE instance = NULL;
     if (!::GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
@@ -39,6 +41,19 @@ void WorkThread::InitMessageWnd() {
 
   message_hwnd_ = CreateWindow(MAKEINTATOM(atom_), 0, 0, 0, 0, 0, 0,
     HWND_MESSAGE, 0, instance, 0);
+}
+
+void WorkThread::RunLoop() {
+  BOOL bRet = FALSE;
+  MSG msg;
+  while((bRet = ::GetMessage(&msg, NULL, 0, 0)) != 0) {
+    if (bRet == -1) {
+      continue;
+    } else {
+      TranslateMessage(&msg);
+      DispatchMessage(&msg);
+    }
+  }
 }
 
 LRESULT CALLBACK WorkThread::WndProcThunk(HWND window_handle,
