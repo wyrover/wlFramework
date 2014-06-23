@@ -13,6 +13,13 @@ public:
   enum Type {
     Type_UI = 0,
     Type_IO,
+    Type_IO2,
+    Type_IO3,
+    Type_IO4,
+    Type_IO5,
+    Type_IO6,
+    Type_IO7,
+    Type_IO8,
     Type_COUNT
   };
   static MessageLoop* current();

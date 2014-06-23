@@ -73,6 +73,7 @@ void MessageLoop::QuitCurrent() {
 
 MessageLoop::MessageLoop(Type type)
   : atom_(0), type_(type) {
+  InitMessageWnd();
   g_tls.Set(this);
 }
 
