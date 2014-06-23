@@ -1,5 +1,6 @@
 #include "base/closure.h"
-
+#include "base/message_loop.h"
+#include "main_runner.h"
 // 我们支持的bind类型
 void Add1() {}
 void Add2(int i) {}
@@ -32,16 +33,11 @@ public:
 };
 
 int APIENTRY wWinMain(HINSTANCE instance, HINSTANCE prev, wchar_t*, int) {
-  int i = 0, j = 0;
-  base::Closure closure = base::Bind(&Add1);
-  closure.Run();
-  closure = base::Bind(&Add2, i);
-  closure.Run();
-  closure = base::Bind(&Add3, i, j);
-  closure.Run();
-  scoped_refptr<AddClass1> add_class1(new AddClass1());
-  add_class1->TestAdd();
-  scoped_ptr<AddClass2> add_class2(new AddClass2());
-  add_class2->TestAdd();
+  scoped_ptr<MainRunner> main_runner(MainRunner::Create());
+  main_runner->Initilize();
+  main_runner->PreMainMessageLoopRun(instance);
+  main_runner->Run();
+  main_runner->PostMainMessageLoopRun();
+  main_runner->Shutdown();
   return 0;
 }

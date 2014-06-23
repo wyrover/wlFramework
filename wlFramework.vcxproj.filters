@@ -10,13 +10,14 @@
     <ClCompile Include="base\lock.cc">
       <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="base\workthread.cc">
-      <Filter>base</Filter>
-    </ClCompile>
     <ClCompile Include="base\closure.cc">
       <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="exe_main.cpp" />
+    <ClCompile Include="base\message_loop.cc">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="exe_main.cc" />
+    <ClCompile Include="main_runner.cc" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -36,14 +37,22 @@
     <ClInclude Include="base\lock.h">
       <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="base\workthread.h">
-      <Filter>base</Filter>
-    </ClInclude>
     <ClInclude Include="base\closure.h">
       <Filter>base</Filter>
     </ClInclude>
     <ClInclude Include="base\closure_internal.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="base\message_loop.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="base\thread_local.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="main_runner.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="wlFramework.rc" />
   </ItemGroup>
 </Project>

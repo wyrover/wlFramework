@@ -81,23 +81,30 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="base\closure.cc" />
-    <ClCompile Include="base\workthread.cc" />
+    <ClCompile Include="base\message_loop.cc" />
     <ClCompile Include="base\lock.cc" />
     <ClCompile Include="base\ref_counted.cc" />
     <ClCompile Include="base\weak_ptr.cc" />
-    <ClCompile Include="exe_main.cpp">
+    <ClCompile Include="exe_main.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="main_runner.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="base\closure.h" />
     <ClInclude Include="base\closure_internal.h" />
-    <ClInclude Include="base\workthread.h" />
+    <ClInclude Include="base\message_loop.h" />
     <ClInclude Include="base\lock.h" />
     <ClInclude Include="base\ref_counted.h" />
     <ClInclude Include="base\scoped_ptr.h" />
+    <ClInclude Include="base\thread_local.h" />
     <ClInclude Include="base\weak_ptr.h" />
+    <ClInclude Include="main_runner.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="wlFramework.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
