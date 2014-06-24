@@ -23,7 +23,7 @@ public:
     Type_COUNT
   };
   static MessageLoop* current();
-  static void Start(Type type);
+  static void Start(Type type, HANDLE* handle);
   static void PostTask(Type type, const base::Closure& task);
   static void QuitCurrent();
   explicit MessageLoop(Type type);

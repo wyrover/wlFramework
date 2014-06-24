@@ -1,4 +1,7 @@
 #include "main_runner.h"
+
+#include <time.h>
+
 #include "base/message_loop.h"
 #include "base/closure.h"
 #include "resource.h"
@@ -78,6 +81,15 @@ namespace {
   //  WM_DESTROY	- post a quit message and return
   //
   //
+  void ShowAboutDialogOnUI(const HWND& hWnd) {
+    DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+  }
+  void MaybeShowAboutDialog(const HWND& hWnd) {
+    srand((unsigned)time(NULL));
+    if (rand() % 10 > 5) {
+      MessageLoop::PostTask(MessageLoop::Type_UI, base::Bind(ShowAboutDialogOnUI, hWnd));
+    }
+  }
   LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
   {
     int wmId, wmEvent;
@@ -93,7 +105,7 @@ namespace {
       switch (wmId)
       {
       case IDM_ABOUT:
-        DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+        MessageLoop::PostTask(MessageLoop::Type_IO4, base::Bind(&MaybeShowAboutDialog, hWnd));
         break;
       case IDM_EXIT:
         DestroyWindow(hWnd);
@@ -141,13 +153,15 @@ MainRunner* MainRunner::Create() {
   return new MainRunner();
 }
 
-MainRunner::MainRunner() {}
+MainRunner::MainRunner() {
+  memset(thread_handle_, 0, MessageLoop::Type_COUNT*sizeof(thread_handle_[0]));
+}
 
 MainRunner::~MainRunner() {}
 
 void MainRunner::Initilize() {
   for (size_t type = MessageLoop::Type_UI + 1; type < MessageLoop::Type_COUNT; ++type) {
-    MessageLoop::Start(static_cast<MessageLoop::Type>(type));
+    MessageLoop::Start(static_cast<MessageLoop::Type>(type), &thread_handle_[type]);
   }
   main_message_loop_.reset(new MessageLoop(MessageLoop::Type_UI));
 }
@@ -168,5 +182,8 @@ void MainRunner::PostMainMessageLoopRun() {
 void MainRunner::Shutdown() {
   for (size_t type = MessageLoop::Type_COUNT - 1; type >= MessageLoop::Type_UI + 1; --type) {
     MessageLoop::PostTask(static_cast<MessageLoop::Type>(type), base::Bind(&MessageLoop::QuitCurrent));
+    DWORD result = WaitForSingleObject(thread_handle_[type], INFINITE);
+    CloseHandle(thread_handle_[type]);
+    thread_handle_[type] = 0;
   }
 }

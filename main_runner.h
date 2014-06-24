@@ -15,6 +15,7 @@ public:
   void Shutdown();
 private:
   scoped_ptr<MessageLoop> main_message_loop_;
+  HANDLE thread_handle_[MessageLoop::Type_COUNT];
   DISALLOW_COPY_AND_ASSIGN(MainRunner);
 };
 #endif

@@ -29,10 +29,6 @@ namespace {
     MessageLoop::Type type = thread_params->type;
     delete thread_params;
     scoped_ptr<MessageLoop> message_loop(new MessageLoop(type));
-    {
-      base::AutoLock locked(g_loops_lock);
-      g_loops[type] = message_loop.get();
-    }
     message_loop->Run();
     return 0;
   }
@@ -43,15 +39,18 @@ MessageLoop* MessageLoop::current() {
   return g_tls.Get();
 }
 
-void MessageLoop::Start(Type type) {
+void MessageLoop::Start(Type type, HANDLE* handle) {
   if (type > Type_UI && type < Type_COUNT) {
     ThreadParams* params = new ThreadParams();
     params->type = type;
     HANDLE thread_handle = CreateThread(NULL, 0, ThreadMain, (void*)params, 0, NULL);
-    if (thread_handle) {
-      CloseHandle(thread_handle);
-    } else {
+    if (!thread_handle) {
       delete params;
+    } else {
+      if (handle)
+        *handle = thread_handle;
+      else
+        CloseHandle(thread_handle);
     }
   }
 }
@@ -65,6 +64,8 @@ void MessageLoop::PostTask(Type type, const base::Closure& task) {
   if (message_loop) {
     message_loop->PostTask(task);
   }
+  if (!target_thread_outlives_current)
+    g_loops_lock.Release();
 }
 
 void MessageLoop::QuitCurrent() {
@@ -75,6 +76,8 @@ MessageLoop::MessageLoop(Type type)
   : atom_(0), type_(type) {
   InitMessageWnd();
   g_tls.Set(this);
+  base::AutoLock locked(g_loops_lock);
+  g_loops[type] = this;
 }
 
 MessageLoop::~MessageLoop() {
@@ -82,6 +85,8 @@ MessageLoop::~MessageLoop() {
   UnregisterClass(MAKEINTATOM(atom_),
     GetModuleFromAddress(&WndProcThunk));
   g_tls.Set(NULL);
+  base::AutoLock locked(g_loops_lock);
+  g_loops[type_] = NULL;
 }
 
 void MessageLoop::InitMessageWnd() {
@@ -113,7 +118,7 @@ void MessageLoop::Run() {
 }
 
 void MessageLoop::Quit() {
-  ::PostQuitMessage(0);
+  PostQuitMessage(0);
 }
 
 void MessageLoop::PostTask(const base::Closure& task) {
