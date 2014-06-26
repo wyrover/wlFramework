@@ -86,8 +86,8 @@ namespace {
   }
   void MaybeShowAboutDialog(const HWND& hWnd) {
     srand((unsigned)time(NULL));
-    if (rand() % 10 > 5) {
-      MessageLoop::PostTask(MessageLoop::Type_UI, base::Bind(ShowAboutDialogOnUI, hWnd));
+    if (true || rand() % 10 > 5) {
+      MessageLoop::PostDelayedTask(MessageLoop::UI, base::Bind(ShowAboutDialogOnUI, hWnd), 5*1000);
     }
   }
   LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -105,7 +105,7 @@ namespace {
       switch (wmId)
       {
       case IDM_ABOUT:
-        MessageLoop::PostTask(MessageLoop::Type_IO4, base::Bind(&MaybeShowAboutDialog, hWnd));
+        MessageLoop::PostDelayedTask(MessageLoop::IO, base::Bind(&MaybeShowAboutDialog, hWnd), 5*1000);
         break;
       case IDM_EXIT:
         DestroyWindow(hWnd);
@@ -154,16 +154,15 @@ MainRunner* MainRunner::Create() {
 }
 
 MainRunner::MainRunner() {
-  memset(thread_handle_, 0, MessageLoop::Type_COUNT*sizeof(thread_handle_[0]));
 }
 
 MainRunner::~MainRunner() {}
 
 void MainRunner::Initilize() {
-  for (size_t type = MessageLoop::Type_UI + 1; type < MessageLoop::Type_COUNT; ++type) {
-    MessageLoop::Start(static_cast<MessageLoop::Type>(type), &thread_handle_[type]);
+  for (size_t id = MessageLoop::UI + 1; id < MessageLoop::ID_COUNT; ++id) {
+    MessageLoop::Start(static_cast<MessageLoop::ID>(id));
   }
-  main_message_loop_.reset(new MessageLoop(MessageLoop::Type_UI));
+  main_message_loop_.reset(new MessageLoop(MessageLoop::UI));
 }
 
 void MainRunner::PreMainMessageLoopRun(HINSTANCE instance) {
@@ -180,10 +179,7 @@ void MainRunner::PostMainMessageLoopRun() {
 }
 
 void MainRunner::Shutdown() {
-  for (size_t type = MessageLoop::Type_COUNT - 1; type >= MessageLoop::Type_UI + 1; --type) {
-    MessageLoop::PostTask(static_cast<MessageLoop::Type>(type), base::Bind(&MessageLoop::QuitCurrent));
-    DWORD result = WaitForSingleObject(thread_handle_[type], INFINITE);
-    CloseHandle(thread_handle_[type]);
-    thread_handle_[type] = 0;
+  for (size_t id = MessageLoop::ID_COUNT - 1; id >= MessageLoop::UI + 1; --id) {
+    MessageLoop::Stop(static_cast<MessageLoop::ID>(id));
   }
 }
